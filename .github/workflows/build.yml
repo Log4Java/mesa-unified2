@@ -31,10 +31,19 @@ jobs:
           chmod +x *.sh
 
       - name: Execute Mesa Package Generation
-        env:
-          ANDROID_HOME: /usr/local/lib/android/sdk
-          ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk-bundle
         run: |
+          export ANDROID_HOME=/usr/local/lib/android/sdk
+          export ANDROID_SDK_ROOT=/usr/local/lib/android/sdk
+          
+          NDK_PATH=$(ls -d /usr/local/lib/android/sdk/ndk/* | sort -V | tail -n 1)
+          echo "Found Android NDK at: $NDK_PATH"
+          
+          export NDK=$NDK_PATH
+          export NDK_ROOT=$NDK_PATH
+          export ANDROID_NDK=$NDK_PATH
+          export ANDROID_NDK_HOME=$NDK_PATH
+          export ANDROID_NDK_ROOT=$NDK_PATH
+          
           ./aargen_mesa.sh
           ./create_aar.sh
 
