@@ -21,9 +21,6 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Install Native Build Tools
         run: |
           sudo apt-get update
@@ -34,6 +31,9 @@ jobs:
           chmod +x *.sh
 
       - name: Execute Mesa Package Generation
+        env:
+          ANDROID_HOME: /usr/local/lib/android/sdk
+          ANDROID_NDK_HOME: /usr/local/lib/android/sdk/ndk-bundle
         run: |
           ./aargen_mesa.sh
           ./create_aar.sh
