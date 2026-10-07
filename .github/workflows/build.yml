@@ -29,7 +29,7 @@ jobs:
       - name: Clone Official Mesa Source Code
         run: |
           echo "Cloning official Mesa upstream repository..."
-          git clone --depth 1 --branch mesa-24.0 https://gitlab.freedesktop.org/mesa/mesa
+          git clone --depth 1 --branch 24.0 https://gitlab.freedesktop.org/mesa/mesa
 
       - name: Grant Execute Permissions to Packager Scripts
         run: |
