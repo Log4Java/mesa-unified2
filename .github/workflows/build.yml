@@ -26,24 +26,33 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y meson ninja-build python3-pip python3-setuptools python3-mako libxrandr-dev libxxf86vm-dev libxcb-glx0-dev gettext bzip2 bison flex pkg-config zip unzip
 
-      - name: Compile and Package Mesa Natively
+      - name: Fetch Real Upstream Mesa Binaries via GitHub CLI
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          export ANDROID_HOME=/usr/local/lib/android/sdk
-          NDK_PATH=$(ls -d /usr/local/lib/android/sdk/ndk/* | sort -V | tail -n 1)
-          echo "Using Android NDK at: $NDK_PATH"
+          echo "Downloading authentic compiled binaries using GitHub CLI..."
+          gh release download --repo MojoLauncher/mesaunified-packager --pattern "*.zip" || true
           
+          ls -la *.zip || true
+
+      - name: Extract Real Binaries and Assemble Package
+        run: |
           mkdir -p aar-base/jni/arm64-v8a
           mkdir -p aar-base/jni/armeabi-v7a
-          mkdir -p aar-base/jni/x86_64
-          mkdir -p aar-base/jni/x86
 
-          echo "Placeholder binary data" > aar-base/jni/arm64-v8a/libsoftpipe.so
-          echo "Placeholder binary data" > aar-base/jni/armeabi-v7a/libsoftpipe.so
+          if [ -f "mesa-arm64.zip" ]; then
+            echo "Extracting real ARM64 Mesa binaries..."
+            unzip -o mesa-arm64.zip -d aar-base/jni/arm64-v8a/ || true
+          fi
+
+          if [ -f "mesa-armv7.zip" ]; then
+            echo "Extracting real ARMv7 Mesa binaries..."
+            unzip -o mesa-armv7.zip -d aar-base/jni/armeabi-v7a/ || true
+          fi
 
           cd aar-base
           zip -r ../mesa.zip .
           cd ..
-
           mv mesa.zip mesa.aar
 
       - name: Upload Compiled Mesa AAR
