@@ -51,7 +51,7 @@ jobs:
           mkdir -p aar-base/jni/armeabi-v7a
 
           echo "Compiling true Mesa drivers for ARM64..."
-          cd mesa-src
+          cd mesa
           meson setup build-arm64 --cross-file=../cross/android-arm64.txt -Dplatforms=android -Dgallium-drivers=swrast -Dvulkan-drivers=[] -Dbuildtype=release
           ninja -C build-arm64
           
